@@ -28,8 +28,8 @@ class BookList extends Component {
         <input type="text"
           onChange={this.handleInputChange}
           className="form-control"
-          name="searchBar"
           placeholder="Search by Title or Author"
+          value={this.state.searchInput}
         />
         {listOfBooks}
       </div>

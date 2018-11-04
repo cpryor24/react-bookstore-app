@@ -7,8 +7,7 @@ import CheckoutCart from './Components/CheckoutCart';
 
 class App extends Component {
   state = {
-    books: [],
-    cartItems: []
+    books: []
   }
 
   componentDidMount() {
@@ -18,11 +17,24 @@ class App extends Component {
       }))
   }
 
-  addItemToCart = (id) => {
-    let bookFiltered = this.state.books.filter( (book) => book.id == id)
-    return this.setState({
-      cartItems: [...this.state.cartItems, bookFiltered]
-    })
+  inCart = () => this.state.books.filter(book => book.inCart)
+
+  addItemToCart = (id) => { // New
+    axios.patch(`http://localhost:8082/api/books/cart/add/${id}`)
+      .then(res => {
+        let otherBooks = this.state.books.filter( book => book.id !== parseInt(id))
+        let orderedBooks = [...otherBooks, res.data].sort((a, b) => a.id > b.id)
+        this.setState({ books: orderedBooks })
+      })
+  }
+
+  removeItemToCart = (id) => { // New
+    axios.patch(`http://localhost:8082/api/books/cart/remove/${id}`)
+      .then(res => {
+        let otherBooks = this.state.books.filter( book => book.id !== parseInt(id))
+        let orderedBooks = [...otherBooks, res.data].sort((a, b) => a.id > b.id)
+        this.setState({ books: orderedBooks })
+      })
   }
 
   render() {
@@ -38,7 +50,7 @@ class App extends Component {
               />
             </div>
             <div className="col-md-5">
-              <CheckoutCart cart={this.state.cartItems} />
+              <CheckoutCart inCart={this.inCart()}  removeItemToCartFunc={this.removeItemToCart}/>
             </div>
           </div>
         </div>

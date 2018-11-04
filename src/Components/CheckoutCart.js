@@ -1,15 +1,15 @@
 import React from 'react';
 import CartItem from './CartItem';
 
-const CheckoutCart = ({cart}) => {
-  let booksInCart = cart.map(book => <CartItem theSelectedItem={book[0]} key={book[0].id}/>)
+const CheckoutCart = ({inCart, removeItemToCartFunc}) => {
+  let booksInCart = inCart
+    .map(book => <CartItem theSelectedItem={book}
+      key={book.id}
+      removeItem={removeItemToCartFunc}
+    />
+  )
 
-  /*let totalAmount = () => {
-    let total = cart.map(item => parseInt(item[0].price) )
-    let reducer = (accumulator, currentValue) => accumulator + currentValue;
-    let cost = total.reduce(reducer)
-    return cost
-  }*/
+  let total = inCart.reduce( (acc, item) => acc + item.price, 0)
 
   return (
     <div className="container">
@@ -23,7 +23,7 @@ const CheckoutCart = ({cart}) => {
         </div>
         {booksInCart}
       </div>
-      <div className="text-right">Total Price: ${}</div>
+      <div className="text-right">Total Price: ${total.toFixed(2)}</div>
     </div>
   )
 }
